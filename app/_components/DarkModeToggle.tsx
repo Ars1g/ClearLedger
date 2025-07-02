@@ -14,6 +14,7 @@ export default function DarkModeToggle({ className }: { className?: string }) {
       <Tooltip>
         <TooltipTrigger
           onClick={() => setTheme(resolvedTheme === "light" ? "dark" : "light")}
+          asChild
         >
           <Button variant="outline">
             <SunIcon className="dark:block hidden" />

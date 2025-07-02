@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@tailwind utilities;
 
 @custom-variant dark (&:is(.dark *));
 
@@ -50,7 +51,8 @@
   --foreground: oklch(28.2% 0.091 267.935);
   /* --foreground: oklch(0.141 0.005 285.823); */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.141 0.005 285.823);
+  --card-foreground: oklch(28.2% 0.091 267.935);
+  /* --card-foreground: oklch(0.141 0.005 285.823); */
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
   --primary: oklch(54.6% 0.245 262.881);
@@ -148,5 +150,28 @@
   }
   h6 {
     @apply text-xl;
+  }
+}
+
+@layer components {
+  .spinner {
+    margin: 3.2rem auto 1.6rem;
+    width: 60px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+
+    border-color: var(--tw-color-primary-900);
+    border-right-color: var(--tw-color-primary-200);
+    animation: rotate 1s infinite linear;
+  }
+
+  .spinner-mini {
+    margin: 0;
+    width: 20px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border-color: var(--tw-color-primary-200);
+    border-right-color: transparent;
+    animation: rotate 1s infinite linear;
   }
 }

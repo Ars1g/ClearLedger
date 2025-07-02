@@ -5,7 +5,7 @@ import Image from "next/image";
 export default function LoggedOutLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen">
-      <Navbar />
+      <Navbar variant="with-btn" />
       {children}
     </div>
   );
