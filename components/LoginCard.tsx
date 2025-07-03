@@ -24,6 +24,7 @@ import { z } from "zod";
 import { Button } from "./Button";
 
 import { loginSchema } from "@/lib/schemas";
+import { login } from "@/lib/actions";
 
 export default function LoginCard() {
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -34,10 +35,8 @@ export default function LoginCard() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof loginSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
+    await login(values);
   }
 
   return (
@@ -50,7 +49,6 @@ export default function LoginCard() {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            // action={login}
             className="flex flex-col gap-4"
           >
             <FormField

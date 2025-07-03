@@ -36,11 +36,7 @@ export default function SignupCard() {
     },
   });
   async function onSubmit(values: z.infer<typeof signupSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-    const response = await signup(values);
-    console.log(response);
+    await signup(values);
   }
 
   return (

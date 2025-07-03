@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { loginSchema, signupSchema } from "./schemas";
 import { redirect } from "next/navigation";
-import { createClient } from "./server";
+import { createClient } from "./supabase-client/server";
 
 export async function loginWithPassword(data: z.infer<typeof loginSchema>) {
   const supabase = await createClient();
