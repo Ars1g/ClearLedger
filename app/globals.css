@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@tailwind utilities;
 
 @custom-variant dark (&:is(.dark *));
 
@@ -159,9 +158,8 @@
     width: 60px;
     aspect-ratio: 1;
     border-radius: 50%;
-
-    border-color: var(--tw-color-primary-900);
-    border-right-color: var(--tw-color-primary-200);
+    border-color: #1e3a8a;
+    border-right-color: #1e3a8a;
     animation: rotate 1s infinite linear;
   }
 
@@ -170,7 +168,7 @@
     width: 20px;
     aspect-ratio: 1;
     border-radius: 50%;
-    border-color: var(--tw-color-primary-200);
+    border-color: #1e3a8a;
     border-right-color: transparent;
     animation: rotate 1s infinite linear;
   }

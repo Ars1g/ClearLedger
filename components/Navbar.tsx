@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Logo from "./Logo";
-import { Button } from "@/app/_components/Button";
 import DarkModeToggle from "./DarkModeToggle";
+import { Button } from "./Button";
 
 export default function Navbar({
   variant = "default",

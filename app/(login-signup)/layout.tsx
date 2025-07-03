@@ -1,4 +1,4 @@
-import Navbar from "@/app/_components/Navbar";
+import Navbar from "@/components/Navbar";
 import { ReactNode } from "react";
 
 export default function LoginSignupLayout({
