@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { loginSchema, signupSchema } from "./schemas";
-import { redirect } from "next/navigation";
 import { createClient } from "./supabase-client/server";
 
 export async function loginWithPassword(data: z.infer<typeof loginSchema>) {
@@ -8,15 +7,40 @@ export async function loginWithPassword(data: z.infer<typeof loginSchema>) {
   const { error } = await supabase.auth.signInWithPassword(data);
 
   if (error) {
-    redirect("/error");
+    return { error };
   }
+  return { error };
 }
 
 export async function signUp(data: z.infer<typeof signupSchema>) {
   const supabase = await createClient();
+
   const { error } = await supabase.auth.signUp(data);
+  return { error };
+}
+
+export async function getUserProfile(email: string | undefined) {
+  const supabase = await createClient();
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("email", email)
+    .single();
 
   if (error) {
-    redirect("/error");
+    return { error };
+  }
+  return profile;
+}
+
+export async function createNewUserProfile(email: string | undefined) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("profiles")
+    .insert([{ email: email }])
+    .select();
+
+  if (error) {
+    return { error };
   }
 }

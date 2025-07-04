@@ -24,9 +24,13 @@ import { z } from "zod";
 import { Button } from "./Button";
 
 import { loginSchema } from "@/lib/schemas";
-import { login } from "@/lib/actions";
+import { loginAction } from "@/lib/actions";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function LoginCard() {
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -36,7 +40,13 @@ export default function LoginCard() {
   });
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
-    await login(values);
+    const { error } = await loginAction(values);
+
+    if (error) {
+      toast.error("Incorrect login or email");
+    } else {
+      router.push("/dashboard");
+    }
   }
 
   return (

@@ -6,7 +6,7 @@ import { loginSchema, signupSchema } from "./schemas";
 import { z } from "zod";
 import { loginWithPassword, signUp } from "./server-data-service";
 
-export async function login(values: z.infer<typeof loginSchema>) {
+export async function loginAction(values: z.infer<typeof loginSchema>) {
   const validatedLoginData = loginSchema.safeParse(values);
 
   if (!validatedLoginData.success) {
@@ -16,16 +16,16 @@ export async function login(values: z.infer<typeof loginSchema>) {
     };
   }
 
-  await loginWithPassword(validatedLoginData.data);
-  console.log(validatedLoginData);
+  const { error } = await loginWithPassword(validatedLoginData.data);
 
+  if (error) {
+    return { error };
+  }
   revalidatePath("/", "layout");
-  redirect("/dashboard");
+  return { success: true };
 }
 
-export async function signup(values: z.infer<typeof signupSchema>) {
-  console.log("From server", values);
-
+export async function signupAction(values: z.infer<typeof signupSchema>) {
   const validatedSignupData = signupSchema.safeParse(values);
   console.log(validatedSignupData);
   if (!validatedSignupData.success) {
@@ -35,12 +35,8 @@ export async function signup(values: z.infer<typeof signupSchema>) {
         validatedSignupData.error.issues[0] ?? "Form data validation failed",
     };
   }
-  await signUp(validatedSignupData.data);
-
-  // const { error } = await supabase
-  //   .from("profiles")
-  //   .insert([{ email: validatedSignupData.data.email, id: "otherValue" }]);
+  const { error } = await signUp(validatedSignupData.data);
 
   revalidatePath("/", "layout");
-  redirect("/dashboard");
+  return { error };
 }

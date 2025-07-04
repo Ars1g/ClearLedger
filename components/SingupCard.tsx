@@ -23,7 +23,8 @@ import { Input } from "./Input";
 import { Button } from "./Button";
 import Link from "next/link";
 import { signupSchema } from "@/lib/schemas";
-import { signup } from "@/lib/actions";
+import { signupAction } from "@/lib/actions";
+import { toast } from "sonner";
 
 export default function SignupCard() {
   const form = useForm<z.infer<typeof signupSchema>>({
@@ -35,8 +36,19 @@ export default function SignupCard() {
       confirmPassword: "",
     },
   });
+
   async function onSubmit(values: z.infer<typeof signupSchema>) {
-    await signup(values);
+    const { error } = await signupAction(values);
+
+    if (error) {
+      toast.error("Failed to create new account.");
+    }
+    toast(
+      <div>
+        <strong>Account successfully created!</strong>
+        <p className="font-[400]">Check email for confirmation link</p>
+      </div>
+    );
   }
 
   return (
