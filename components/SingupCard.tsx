@@ -1,8 +1,13 @@
 "use client";
 
+import { signupAction } from "@/lib/actions";
+import { signupSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
+import { Button } from "./Button";
 import {
   Card,
   CardContent,
@@ -12,19 +17,15 @@ import {
   CardTitle,
 } from "./Card";
 import {
+  Form,
   FormControl,
   FormField,
   FormItem,
-  Form,
   FormLabel,
   FormMessage,
 } from "./Form";
+import GoogleSignInButton from "./GoogleSignUpButton";
 import { Input } from "./Input";
-import { Button } from "./Button";
-import Link from "next/link";
-import { signupSchema } from "@/lib/schemas";
-import { signupAction } from "@/lib/actions";
-import { toast } from "sonner";
 
 export default function SignupCard() {
   const form = useForm<z.infer<typeof signupSchema>>({
@@ -41,14 +42,17 @@ export default function SignupCard() {
     const { error } = await signupAction(values);
 
     if (error) {
+      form.reset();
       toast.error("Failed to create new account.");
     }
+
     toast(
       <div>
         <strong>Account successfully created!</strong>
         <p className="font-[400]">Check email for confirmation link</p>
       </div>
     );
+    form.reset();
   }
 
   return (
@@ -57,7 +61,7 @@ export default function SignupCard() {
         <CardTitle className="text-2xl">Sign up</CardTitle>
         <CardDescription>Create new ClearLedger account</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex flex-col gap-4">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -126,7 +130,14 @@ export default function SignupCard() {
             <Button className="w-full">SIGN UP</Button>
           </form>
         </Form>
+        <div className="flex gap-3 items-center justify-center">
+          <div className="border-t-1 min-w-[39%]"></div>
+          <div className="text-gray-500 text-sm">OR</div>
+          <div className="border-t-1 min-w-[39%]"></div>
+        </div>
+        <GoogleSignInButton />
       </CardContent>
+
       <CardFooter className="flex justify-between items-center">
         <small>Already have an account?</small>
         <Button asChild variant="outline" size="sm">
