@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Button } from "./Button";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -15,7 +15,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "./Card";
+} from "./ui/card";
 import {
   Form,
   FormControl,
@@ -23,9 +23,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "./Form";
-import GoogleSignInButton from "./GoogleSignUpButton";
-import { Input } from "./Input";
+} from "./ui/form";
+import GoogleSignInButton from "@/components/GoogleSignUpButton";
+import { Input } from "./ui/input";
 
 export default function SignupCard() {
   const form = useForm<z.infer<typeof signupSchema>>({
@@ -56,7 +56,7 @@ export default function SignupCard() {
   }
 
   return (
-    <Card className="mt-20">
+    <Card className="mt-20 max-w-lg mx-auto">
       <CardHeader>
         <CardTitle className="text-2xl">Sign up</CardTitle>
         <CardDescription>Create new ClearLedger account</CardDescription>

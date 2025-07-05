@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import img from "@/public/calculator.jpg";
-import { Button } from "@/components/Button";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (

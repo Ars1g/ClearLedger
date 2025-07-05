@@ -1,9 +1,13 @@
 "use client";
 import { useTheme } from "next-themes";
 
-import { Tooltip, TooltipContent, TooltipTrigger } from "./Tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { MoonIcon, SunIcon } from "lucide-react";
-import { Button } from "./Button";
+import { Button } from "@/components/ui/button";
 
 export default function DarkModeToggle({ className }: { className?: string }) {
   const { setTheme, resolvedTheme } = useTheme();

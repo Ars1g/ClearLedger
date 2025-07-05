@@ -33,11 +33,19 @@ export async function getUserProfile(email: string | undefined) {
   return profile;
 }
 
-export async function createNewUserProfile(email: string | undefined) {
+export async function createNewUserProfile(email: string, avatarUrl?: string) {
   const supabase = await createClient();
+
+  const profileData: { email: string; avatarUrl?: string } = {
+    email,
+  };
+  if (avatarUrl) {
+    profileData.avatarUrl = avatarUrl;
+  }
+
   const { error } = await supabase
     .from("profiles")
-    .insert([{ email: email }])
+    .insert([profileData])
     .select();
 
   if (error) {

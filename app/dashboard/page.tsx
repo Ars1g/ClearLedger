@@ -11,13 +11,17 @@ export default async function DashboardPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  // console.log("session:", user);
 
-  const userProfile = await getUserProfile(user!.email);
+  if (!user) return;
+
+  const userProfile = await getUserProfile(user.email);
+  // console.log("userprofile:", userProfile);
 
   if (userProfile.error) {
-    await createNewUserProfile(user!.email);
+    await createNewUserProfile(user.email!, user.user_metadata?.avatar_url);
   }
-  console.log("userprofile:", userProfile);
+  // console.log("newuserprofile:", userProfile);
 
   return <Sidebar />;
 }

@@ -6,7 +6,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/Card";
+} from "@/components/ui/card";
 import {
   FormControl,
   FormField,
@@ -14,24 +14,23 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/Form";
-import { Input } from "@/components/Input";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "./Button";
+import { Button } from "./ui/button";
 
 import { loginSchema } from "@/lib/schemas";
 import { loginAction } from "@/lib/actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
-import GoogleSignInButton from "./GoogleSignUpButton";
+
+import GoogleSignInButton from "@/components/GoogleSignUpButton";
 
 export default function LoginCard() {
-  // const ref = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -54,7 +53,7 @@ export default function LoginCard() {
   }
 
   return (
-    <Card className="mt-20">
+    <Card className="mt-20 max-w-lg mx-auto">
       <CardHeader>
         <CardTitle className="text-2xl">Login</CardTitle>
         <CardDescription>Login to your ClearLedger account</CardDescription>

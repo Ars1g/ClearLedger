@@ -1,7 +1,7 @@
 "use client";
 
 import { signOut } from "@/lib/client-data-service";
-import { Button } from "./Button";
+import { Button } from "@/components/ui/button";
 
 export default function Sidebar() {
   return (
