@@ -14,7 +14,14 @@ export default function Home() {
         quality={100}
         placeholder="blur"
       /> */}
-      <h1>Take control of your finances, for free!</h1>
+      <div className="space-y-6 text-md">
+        <h1>Take control of your finances, for free!</h1>
+        <p>
+          Track income and expenses, visualize your spending habits, and build a
+          better budget.
+        </p>
+      </div>
+
       <Button className="mt-7">
         <Link href="/signup">START NOW</Link>
       </Button>

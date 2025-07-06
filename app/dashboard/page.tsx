@@ -1,4 +1,3 @@
-import Sidebar from "@/components/Sidebar";
 import {
   createNewUserProfile,
   getUserProfile,
@@ -11,7 +10,7 @@ export default async function DashboardPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  // console.log("session:", user);
+  console.log("dashboard session:", user);
 
   if (!user) return;
 
@@ -23,5 +22,5 @@ export default async function DashboardPage() {
   }
   // console.log("newuserprofile:", userProfile);
 
-  return <Sidebar />;
+  return <div>Dashboard</div>;
 }
