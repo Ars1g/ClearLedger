@@ -18,7 +18,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { User } from "@supabase/supabase-js";
 import { EllipsisVertical, LogOutIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
-import { signOut } from "@/lib/client-data-service";
+import { signOut } from "@/lib/actions";
 
 export default function UserInfoSidebar({ user }: { user: User }) {
   const { isMobile } = useSidebar();
@@ -48,11 +48,7 @@ export default function UserInfoSidebar({ user }: { user: User }) {
               <EllipsisVertical className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
-          <DropdownMenuContent
-            sideOffset={4}
-            align="end"
-            side={isMobile ? "bottom" : "right"}
-          >
+          <DropdownMenuContent align="end" side={isMobile ? "bottom" : "right"}>
             <DropdownMenuLabel>
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">

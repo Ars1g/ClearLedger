@@ -24,3 +24,6 @@ export const signupSchema = z
     message: "Passwords don't match",
     path: ["confirmPassword"],
   });
+
+export type LoginData = z.infer<typeof loginSchema>;
+export type SignupData = z.infer<typeof signupSchema>;

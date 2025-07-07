@@ -1,11 +1,13 @@
+import AppSidebar from "@/components/AppSidebar";
+import QueryProvider from "@/components/providers/QueryProvider";
+import ThemeProvider from "@/components/providers/ThemeProvider";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Toaster } from "@/components/ui/sonner";
+import { getUserSession } from "@/lib/server-data-service";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/sonner";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import AppSidebar from "@/components/AppSidebar";
-import { createClient } from "@/lib/supabase-client/server";
+import AppHeader from "@/components/AppHeader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,36 +29,30 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { user } = await getUserSession();
 
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen relative`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {user ? (
-            <SidebarProvider>
-              <AppSidebar user={user} />
-              <main>
-                <SidebarTrigger />
+        <QueryProvider>
+          <ThemeProvider>
+            {user ? (
+              <SidebarProvider>
+                <AppSidebar user={user} />
+                <div className="flex flex-col gap-3 w-full">
+                  <AppHeader />
 
-                {children}
-              </main>
-            </SidebarProvider>
-          ) : (
-            <main>{children}</main>
-          )}
-        </ThemeProvider>
-        <Toaster richColors expand={true} position="bottom-center" />
+                  <main className="flex-1">{children}</main>
+                </div>
+              </SidebarProvider>
+            ) : (
+              <main>{children}</main>
+            )}
+          </ThemeProvider>
+          <Toaster richColors expand={true} position="bottom-center" />
+        </QueryProvider>
       </body>
     </html>
   );

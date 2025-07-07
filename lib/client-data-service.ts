@@ -1,8 +1,19 @@
-import { redirect } from "next/navigation";
+import { Transaction } from "@/app/transactions/transactions-columns";
 import supabase from "./supabase-client/client";
+// import { createClient } from "@supabase/supabase-js";
 
-export async function signOut() {
-  const { error } = await supabase.auth.signOut();
+export async function getTransactionsClient(): Promise<Transaction[]> {
+  //   const supabase = await createClient(
+  //     process.env.SUPABASE_URL!,
+  //     process.env.SUPABASE_KEY!
+  //   );
+  const { data: transactions, error } = await supabase
+    .from("transactions")
+    .select("*");
 
-  redirect("/");
+  if (error) {
+    throw new Error("Failed to get transactions");
+  }
+
+  return transactions;
 }

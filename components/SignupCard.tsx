@@ -1,12 +1,12 @@
 "use client";
 
-import { signupAction } from "@/lib/actions";
-import { signupSchema } from "@/lib/schemas";
+import { handleSignupSubmission } from "@/lib/actions";
+import { SignupData, signupSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -28,7 +28,7 @@ import GoogleSignInButton from "@/components/GoogleSignUpButton";
 import { Input } from "./ui/input";
 
 export default function SignupCard() {
-  const form = useForm<z.infer<typeof signupSchema>>({
+  const form = useForm<SignupData>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
       username: "",
@@ -38,8 +38,8 @@ export default function SignupCard() {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof signupSchema>) {
-    const { error } = await signupAction(values);
+  async function onSubmit(values: SignupData) {
+    const { error } = await handleSignupSubmission(values);
 
     if (error) {
       form.reset();

@@ -1,8 +1,21 @@
-import { z } from "zod";
-import { loginSchema, signupSchema } from "./schemas";
+import { Transaction } from "@/app/transactions/transactions-columns";
+import { LoginData, SignupData } from "./schemas";
 import { createClient } from "./supabase-client/server";
 
-export async function loginWithPassword(data: z.infer<typeof loginSchema>) {
+export async function getTransactions(): Promise<Transaction[]> {
+  const supabase = await createClient();
+  const { data: transactions, error } = await supabase
+    .from("transactions")
+    .select("*");
+
+  if (error) {
+    throw new Error("Failed to get transactions");
+  }
+
+  return transactions;
+}
+
+export async function loginWithPassword(data: LoginData) {
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword(data);
 
@@ -12,7 +25,7 @@ export async function loginWithPassword(data: z.infer<typeof loginSchema>) {
   return { error };
 }
 
-export async function signUp(data: z.infer<typeof signupSchema>) {
+export async function createUserAccount(data: SignupData) {
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signUp(data);
@@ -51,4 +64,12 @@ export async function createNewUserProfile(email: string, avatarUrl?: string) {
   if (error) {
     return { error };
   }
+}
+
+export async function getUserSession() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  return { user };
 }

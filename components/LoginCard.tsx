@@ -20,10 +20,10 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+
 import { Button } from "./ui/button";
 
-import { loginSchema } from "@/lib/schemas";
+import { LoginData, loginSchema } from "@/lib/schemas";
 import { loginAction } from "@/lib/actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -33,7 +33,7 @@ import GoogleSignInButton from "@/components/GoogleSignUpButton";
 export default function LoginCard() {
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof loginSchema>>({
+  const form = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
@@ -41,7 +41,7 @@ export default function LoginCard() {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof loginSchema>) {
+  async function onSubmit(values: LoginData) {
     const { error } = await loginAction(values);
 
     if (error) {
