@@ -8,7 +8,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useDeleteTransaction } from "@/hooks/useDeleteTransaction";
-import { getCategory } from "@/lib/client-data-service";
 
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { EllipsisVerticalIcon } from "lucide-react";
@@ -47,13 +46,24 @@ export type Transaction = {
   categoryId: number | null;
 };
 
-function Category({ row }: { row: Row<Category> }) {}
+function Category({
+  row,
+  categoryMap,
+}: {
+  row: Row<Transaction>;
+  categoryMap: Record<number, Category>;
+}) {
+  const categoryId = row.getValue("categoryId") as number;
+  const category = categoryMap[categoryId];
+
+  return <span>{category?.name}</span>;
+}
 
 export type Category = {
   id: number;
-  name: string;
-  type: string;
-  userId: number;
+  name: string | null;
+  type: string | null;
+  userId: number | null;
 };
 
 export const columns: ColumnDef<Transaction>[] = [
@@ -78,11 +88,9 @@ export const columns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "categoryId",
     header: "Category",
-    cell: async ({ row }) => {
-      const categoryId = row.getValue("categoryId") as number;
-      // const categories = await getCategory(categoryId);
-      // console.log(categories);
-    },
+    cell: ({ row, table }) => (
+      <Category row={row} categoryMap={table.options.meta!.categoryMap} />
+    ),
   },
   {
     accessorKey: "amount",

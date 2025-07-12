@@ -17,7 +17,8 @@ export async function getCategory(categoryId: number) {
   const { data: categories, error } = await supabase
     .from("categories")
     .select("*")
-    .eq("id", categoryId);
+    .eq("id", categoryId)
+    .single();
 
   if (error) {
     throw new Error("Failed to get category");

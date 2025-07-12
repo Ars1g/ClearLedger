@@ -2,21 +2,34 @@
 import { DataTable } from "@/components/Data-table";
 import { getTransactionsClient } from "@/lib/client-data-service";
 import { useQuery } from "@tanstack/react-query";
-import { columns, Transaction } from "./transactions-columns";
+import { Category, columns, Transaction } from "./transactions-columns";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PlusIcon } from "lucide-react";
 
 type Props = {
-  initialData: Transaction[];
+  transactions: Transaction[];
+  categories: Category[];
 };
 
-export default function TransactionsClientTable({ initialData }: Props) {
-  const { data: transactions = [] } = useQuery({
+export default function TransactionsClientTable({
+  transactions,
+  categories,
+}: Props) {
+  const { data: cachedTransactions = [] } = useQuery({
     queryKey: ["transactions"],
     queryFn: getTransactionsClient,
-    initialData,
+    initialData: transactions,
   });
+
+  const categoryMap = categories.reduce(
+    (acc, cat) => ({
+      ...acc,
+      [cat.id]: cat,
+    }),
+    {}
+  );
+
   return (
     <div className="flex flex-col gap-2">
       <Button asChild className="flex-none max-w-max ">
@@ -25,7 +38,11 @@ export default function TransactionsClientTable({ initialData }: Props) {
           Add Transaction
         </Link>
       </Button>
-      <DataTable columns={columns} data={transactions} />
+      <DataTable
+        columns={columns}
+        data={cachedTransactions}
+        meta={{ categoryMap }}
+      />
     </div>
   );
 }

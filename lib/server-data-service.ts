@@ -2,6 +2,19 @@ import { Transaction } from "@/app/transactions/transactions-columns";
 import { LoginData, SignupData } from "./schemas";
 import { createClient } from "./supabase-client/server";
 
+export async function getCategories() {
+  const supabase = await createClient();
+  const { data: categories, error } = await supabase
+    .from("categories")
+    .select("*");
+
+  if (error) {
+    throw new Error("Failed to get categories");
+  }
+
+  return categories;
+}
+
 export async function getTransactions(): Promise<Transaction[]> {
   const supabase = await createClient();
   const { data: transactions, error } = await supabase

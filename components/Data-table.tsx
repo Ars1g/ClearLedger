@@ -4,6 +4,7 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  TableMeta,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -19,15 +20,18 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  meta: TableMeta<TData>;
 }
 
 export function DataTable<TData, TValue>({
   columns,
+  meta,
   data,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
+    meta,
     getCoreRowModel: getCoreRowModel(),
     state: {
       columnVisibility: {
