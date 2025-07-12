@@ -8,11 +8,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useDeleteTransaction } from "@/hooks/useDeleteTransaction";
+import { getCategory } from "@/lib/client-data-service";
 
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { EllipsisVerticalIcon } from "lucide-react";
 
-function ActionCell({ row }: any) {
+function ActionCell({ row }: { row: Row<Transaction> }) {
   const { deleteTransaction, isDeleting } = useDeleteTransaction();
   const transaction = row.original;
 
@@ -40,10 +41,19 @@ function ActionCell({ row }: any) {
 
 export type Transaction = {
   id: number;
-  date: string;
-  description: string;
-  amount: number;
-  category: string;
+  date: string | null;
+  description: string | null;
+  amount: number | null;
+  categoryId: number | null;
+};
+
+function Category({ row }: { row: Row<Category> }) {}
+
+export type Category = {
+  id: number;
+  name: string;
+  type: string;
+  userId: number;
 };
 
 export const columns: ColumnDef<Transaction>[] = [
@@ -66,8 +76,13 @@ export const columns: ColumnDef<Transaction>[] = [
     header: "Description",
   },
   {
-    accessorKey: "category",
+    accessorKey: "categoryId",
     header: "Category",
+    cell: async ({ row }) => {
+      const categoryId = row.getValue("categoryId") as number;
+      // const categories = await getCategory(categoryId);
+      // console.log(categories);
+    },
   },
   {
     accessorKey: "amount",

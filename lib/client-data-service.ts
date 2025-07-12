@@ -1,12 +1,7 @@
 import { Transaction } from "@/app/transactions/transactions-columns";
 import supabase from "./supabase-client/client";
-// import { createClient } from "@supabase/supabase-js";
 
 export async function getTransactionsClient(): Promise<Transaction[]> {
-  //   const supabase = await createClient(
-  //     process.env.SUPABASE_URL!,
-  //     process.env.SUPABASE_KEY!
-  //   );
   const { data: transactions, error } = await supabase
     .from("transactions")
     .select("*");
@@ -16,4 +11,17 @@ export async function getTransactionsClient(): Promise<Transaction[]> {
   }
 
   return transactions;
+}
+
+export async function getCategory(categoryId: number) {
+  const { data: categories, error } = await supabase
+    .from("categories")
+    .select("*")
+    .eq("id", categoryId);
+
+  if (error) {
+    throw new Error("Failed to get category");
+  }
+
+  return categories;
 }

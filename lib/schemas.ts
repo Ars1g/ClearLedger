@@ -1,5 +1,12 @@
 import { z } from "zod";
 
+export const transactionSchema = z.object({
+  date: z.string().date(),
+  description: z.string(),
+  amount: z.number(),
+  category: z.string(),
+});
+
 export const loginSchema = z.object({
   email: z.string().email(),
   password: z.string(),
@@ -27,3 +34,4 @@ export const signupSchema = z
 
 export type LoginData = z.infer<typeof loginSchema>;
 export type SignupData = z.infer<typeof signupSchema>;
+export type TransactionData = z.infer<typeof transactionSchema>;

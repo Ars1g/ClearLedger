@@ -44,6 +44,7 @@ export async function updateSession(request: NextRequest) {
     "/transactions",
     "/reports",
     "/settings",
+    "/transactions/new",
   ];
   const pathname = request.nextUrl.pathname;
   const isProtected = protectedRoutes.includes(pathname);
