@@ -73,6 +73,10 @@ export async function signOut() {
   }
 
   revalidatePath("/", "layout");
+
+  // Add a small delay to ensure session is cleared
+  await new Promise((resolve) => setTimeout(resolve, 100));
+
   redirect("/");
 }
 

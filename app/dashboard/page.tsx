@@ -10,11 +10,12 @@ export default async function DashboardPage() {
 
   if (!user) return;
 
-  const userProfile = await getUserProfile(user.email);
+  const userProfile = await getUserProfile(user.id);
 
   if (userProfile.error) {
     await createNewUserProfile(user.email!, user.user_metadata?.avatar_url);
   }
+  console.log("userprofile:", userProfile);
 
   return <div>Dashboard</div>;
 }

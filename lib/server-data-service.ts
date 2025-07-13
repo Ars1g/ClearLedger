@@ -45,12 +45,12 @@ export async function createUserAccount(data: SignupData) {
   return { error };
 }
 
-export async function getUserProfile(email: string | undefined) {
+export async function getUserProfile(userId: string | undefined) {
   const supabase = await createClient();
   const { data: profile, error } = await supabase
     .from("profiles")
     .select("*")
-    .eq("email", email)
+    .eq("id", userId)
     .single();
 
   if (error) {
@@ -59,14 +59,14 @@ export async function getUserProfile(email: string | undefined) {
   return profile;
 }
 
-export async function createNewUserProfile(email: string, avatarUrl?: string) {
+export async function createNewUserProfile(email: string, avatar_url?: string) {
   const supabase = await createClient();
 
-  const profileData: { email: string; avatarUrl?: string } = {
+  const profileData: { email: string; avatar_url?: string } = {
     email,
   };
-  if (avatarUrl) {
-    profileData.avatarUrl = avatarUrl;
+  if (avatar_url) {
+    profileData.avatar_url = avatar_url;
   }
 
   const { error } = await supabase

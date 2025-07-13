@@ -66,6 +66,19 @@ export type Category = {
   userId: number | null;
 };
 
+function TransactionType({
+  row,
+  categoryMap,
+}: {
+  row: Row<Transaction>;
+  categoryMap: Record<number, Category>;
+}) {
+  const categoryId = row.getValue("categoryId") as number;
+  const category = categoryMap[categoryId];
+
+  return <span>{category.type}</span>;
+}
+
 export const columns: ColumnDef<Transaction>[] = [
   {
     id: "index",
@@ -90,6 +103,16 @@ export const columns: ColumnDef<Transaction>[] = [
     header: "Category",
     cell: ({ row, table }) => (
       <Category row={row} categoryMap={table.options.meta!.categoryMap} />
+    ),
+  },
+  {
+    id: "type",
+    header: "Type",
+    cell: ({ row, table }) => (
+      <TransactionType
+        row={row}
+        categoryMap={table.options.meta!.categoryMap}
+      />
     ),
   },
   {
