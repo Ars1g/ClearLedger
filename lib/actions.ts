@@ -1,11 +1,45 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { LoginData, loginSchema, SignupData, signupSchema } from "./schemas";
+import {
+  LoginData,
+  loginSchema,
+  SignupData,
+  signupSchema,
+  TransactionData,
+  transactionSchema,
+} from "./schemas";
 
-import { loginWithPassword, createUserAccount } from "./server-data-service";
 import { redirect } from "next/navigation";
+import {
+  addNewTransaction,
+  createUserAccount,
+  deleteTransaction,
+  loginWithPassword,
+  signUpWithGoogle,
+} from "./server-data-service";
 import { createClient } from "./supabase-client/server";
+
+export async function newTransactionAction(values: TransactionData) {
+  const validatedTransactionData = transactionSchema.safeParse(values);
+
+  if (!validatedTransactionData.success) {
+    return {
+      error: true,
+      message:
+        validatedTransactionData.error.issues[0] ??
+        "Transaction validation failed",
+    };
+  }
+  try {
+    const result = await addNewTransaction(values);
+    console.log("trans:", result);
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: "Failed to add new transaction" };
+  }
+}
 
 export async function loginAction(values: LoginData) {
   const validatedLoginData = loginSchema.safeParse(values);
@@ -17,16 +51,16 @@ export async function loginAction(values: LoginData) {
     };
   }
 
-  const { error } = await loginWithPassword(validatedLoginData.data);
+  const result = await loginWithPassword(validatedLoginData.data);
 
-  if (error) {
-    return { error: true };
+  if (result.error) {
+    return { error: true, message: result.error.message };
   }
   revalidatePath("/", "layout");
   return { success: true };
 }
 
-export async function handleSignupSubmission(values: SignupData) {
+export async function signupSubmitAction(values: SignupData) {
   const validatedSignupData = signupSchema.safeParse(values);
 
   if (!validatedSignupData.success) {
@@ -36,55 +70,50 @@ export async function handleSignupSubmission(values: SignupData) {
       field: validatedSignupData.error.issues[0]?.path?.[0],
     };
   }
-  const { error } = await createUserAccount(validatedSignupData.data);
-
-  if (error) {
-    return { error: true };
-  }
-
-  revalidatePath("/", "layout");
-  return { success: true };
-}
-
-export async function signUpWithGoogle() {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
-    options: {
-      redirectTo: `${process.env.SITE_URL}/auth/callback`,
-    },
-  });
-
-  if (data.url) {
-    redirect(data.url);
-  }
-  if (error) {
-    return { error: true };
+  try {
+    await createUserAccount(validatedSignupData.data);
+    revalidatePath("/", "layout");
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: "Failed to sign up" };
   }
 }
 
-export async function signOut() {
-  const supabase = await createClient();
-  const { error } = await supabase.auth.signOut();
+export async function signUpWithGoogleAction() {
+  const result = await signUpWithGoogle();
 
-  if (error) {
-    return { error: true };
+  if (result.error) {
+    return { error: true, message: result.error.message };
   }
 
-  revalidatePath("/", "layout");
-
-  // Add a small delay to ensure session is cleared
-  await new Promise((resolve) => setTimeout(resolve, 100));
-
-  redirect("/");
+  if (result.data.url) {
+    redirect(result.data.url);
+  }
 }
 
-export async function deleteTransaction(id: number) {
+export async function signOutAction() {
   const supabase = await createClient();
-  const { error } = await supabase.from("transactions").delete().eq("id", id);
 
-  if (error) {
-    return { error };
+  try {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+    revalidatePath("/", "layout");
+
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: "Failed to log out" };
+  }
+}
+
+export async function deleteTransactionAction(id: number) {
+  try {
+    await deleteTransaction(id);
+
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return null;
   }
 }

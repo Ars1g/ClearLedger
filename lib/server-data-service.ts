@@ -1,15 +1,36 @@
-import { Transaction } from "@/app/transactions/transactions-columns";
-import { LoginData, SignupData } from "./schemas";
+import { Category, Transaction } from "@/app/transactions/transactions-columns";
+import { LoginData, SignupData, TransactionData } from "./schemas";
 import { createClient } from "./supabase-client/server";
+import { cache } from "react";
 
-export async function getCategories() {
+export async function addNewTransaction(
+  values: TransactionData
+): Promise<Transaction[]> {
+  const supabase = await createClient();
+  const { data: transactions, error } = await supabase
+    .from("transactions")
+    .insert([
+      {
+        date: values.date,
+        description: values.description,
+        amount: values.amount,
+      },
+    ])
+    .select();
+  if (error) {
+    throw new Error("Failed to add new transaction");
+  }
+  return transactions;
+}
+
+export async function getCategories(): Promise<Category[]> {
   const supabase = await createClient();
   const { data: categories, error } = await supabase
     .from("categories")
     .select("*");
 
   if (error) {
-    throw new Error("Failed to get categories");
+    throw new Error("Failed to fetch categories");
   }
 
   return categories;
@@ -22,7 +43,7 @@ export async function getTransactions(): Promise<Transaction[]> {
     .select("*");
 
   if (error) {
-    throw new Error("Failed to get transactions");
+    throw new Error("Failed to fetch transactions");
   }
 
   return transactions;
@@ -35,14 +56,17 @@ export async function loginWithPassword(data: LoginData) {
   if (error) {
     return { error };
   }
-  return { error };
+  return { success: true };
 }
 
 export async function createUserAccount(data: SignupData) {
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signUp(data);
-  return { error };
+  if (error) {
+    throw new Error("Failed to create user account");
+  }
+  return { success: true };
 }
 
 export async function getUserProfile(userId: string | undefined) {
@@ -53,10 +77,8 @@ export async function getUserProfile(userId: string | undefined) {
     .eq("id", userId)
     .single();
 
-  if (error) {
-    return { error };
-  }
-  return profile;
+  if (profile && !error) return profile;
+  return null;
 }
 
 export async function createNewUserProfile(email: string, avatar_url?: string) {
@@ -75,8 +97,40 @@ export async function createNewUserProfile(email: string, avatar_url?: string) {
     .select();
 
   if (error) {
-    return { error };
+    throw new Error("Failed to create new user profile");
   }
+  return { success: true };
+}
+
+export async function deleteTransaction(id: number) {
+  const supabase = await createClient();
+  const { error } = await supabase.from("transactions").delete().eq("id", id);
+
+  if (error) {
+    throw new Error("Failed to delete transaction");
+  }
+  return { success: true };
+}
+
+// export async function signOut() {
+//   const supabase = await createClient();
+//   const { error } = await supabase.auth.signOut();
+
+//   if (error) return { error };
+//   return { success: true };
+// }
+
+export async function signUpWithGoogle() {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: `${process.env.SITE_URL}/auth/callback`,
+    },
+  });
+  if (error) return { error };
+  return { data };
 }
 
 export async function getUserSession() {
@@ -86,3 +140,23 @@ export async function getUserSession() {
   } = await supabase.auth.getUser();
   return { user };
 }
+
+export const getOrCreateUserProfile = cache(async () => {
+  const { user } = await getUserSession();
+
+  if (!user) return null;
+
+  const userProfile = await getUserProfile(user.id);
+  if (userProfile) return userProfile;
+
+  try {
+    const newUserProfile = await createNewUserProfile(
+      user.email!,
+      user.user_metadata?.avatar_url
+    );
+    return newUserProfile;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+});

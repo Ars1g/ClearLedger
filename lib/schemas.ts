@@ -3,7 +3,7 @@ import { z } from "zod";
 export const transactionSchema = z.object({
   date: z.date(),
   description: z.string().max(1000).min(2),
-  amount: z.number(),
+  amount: z.coerce.number(),
   category: z.string(),
 });
 

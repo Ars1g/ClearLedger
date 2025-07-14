@@ -18,10 +18,25 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { User } from "@supabase/supabase-js";
 import { EllipsisVertical, LogOutIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
-import { signOut } from "@/lib/actions";
+import { signOutAction } from "@/lib/actions";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function UserInfoSidebar({ user }: { user: User }) {
   const { isMobile } = useSidebar();
+  const router = useRouter();
+
+  async function handleLogout() {
+    const result = await signOutAction();
+
+    if (result.success) {
+      toast.success("You have been signed out");
+      router.push("/");
+    }
+    if (result.error) {
+      toast.error("Failed to log out");
+    }
+  }
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -81,7 +96,7 @@ export default function UserInfoSidebar({ user }: { user: User }) {
               <DropdownMenuSeparator />
 
               <Link href="/reports" className="flex items-center gap-2">
-                <DropdownMenuItem className="flex-1" onClick={signOut}>
+                <DropdownMenuItem className="flex-1" onClick={handleLogout}>
                   <LogOutIcon />
                   Log out
                 </DropdownMenuItem>

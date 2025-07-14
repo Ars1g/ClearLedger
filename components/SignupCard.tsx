@@ -1,6 +1,6 @@
 "use client";
 
-import { handleSignupSubmission } from "@/lib/actions";
+import { signupSubmitAction } from "@/lib/actions";
 import { SignupData, signupSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -39,7 +39,7 @@ export default function SignupCard() {
   });
 
   async function onSubmit(values: SignupData) {
-    const { error } = await handleSignupSubmission(values);
+    const { error } = await signupSubmitAction(values);
 
     if (error) {
       form.reset();

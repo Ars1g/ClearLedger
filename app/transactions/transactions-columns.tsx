@@ -8,8 +8,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useDeleteTransaction } from "@/hooks/useDeleteTransaction";
+import { Tables } from "@/types/supabase";
 
 import { ColumnDef, Row } from "@tanstack/react-table";
+
 import { EllipsisVerticalIcon } from "lucide-react";
 
 function ActionCell({ row }: { row: Row<Transaction> }) {
@@ -38,13 +40,7 @@ function ActionCell({ row }: { row: Row<Transaction> }) {
   );
 }
 
-export type Transaction = {
-  id: number;
-  date: string | null;
-  description: string | null;
-  amount: number | null;
-  categoryId: number | null;
-};
+export type Transaction = Tables<"transactions">;
 
 function Category({
   row,
@@ -59,12 +55,7 @@ function Category({
   return <span>{category?.name}</span>;
 }
 
-export type Category = {
-  id: number;
-  name: string | null;
-  type: string | null;
-  userId: number | null;
-};
+export type Category = Tables<"categories">;
 
 function TransactionType({
   row,
@@ -76,7 +67,7 @@ function TransactionType({
   const categoryId = row.getValue("categoryId") as number;
   const category = categoryMap[categoryId];
 
-  return <span>{category.type}</span>;
+  return <span>{category?.type}</span>;
 }
 
 export const columns: ColumnDef<Transaction>[] = [

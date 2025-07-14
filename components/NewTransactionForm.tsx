@@ -30,10 +30,10 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import { useAddNewTransaction } from "@/hooks/useAddNewTransaction";
 
 export default function NewTransactionForm() {
   const form = useForm<TransactionData>({
@@ -45,9 +45,11 @@ export default function NewTransactionForm() {
       description: "",
     },
   });
+  const { addNewTransaction, isAdding } = useAddNewTransaction();
 
   function onSubmit(values: TransactionData) {
-    console.log("asd");
+    console.log(values);
+    addNewTransaction(values);
   }
 
   return (
@@ -72,6 +74,7 @@ export default function NewTransactionForm() {
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
+                          disabled={isAdding}
                           variant={"outline"}
                           className={cn(
                             "font-normal",
@@ -105,6 +108,7 @@ export default function NewTransactionForm() {
             />
             <FormField
               control={form.control}
+              disabled={isAdding}
               name="description"
               render={({ field }) => (
                 <FormItem>
@@ -116,10 +120,12 @@ export default function NewTransactionForm() {
                       placeholder="Describe transaction"
                     />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
             <FormField
+              disabled={isAdding}
               control={form.control}
               name="amount"
               render={({ field }) => (
@@ -128,6 +134,7 @@ export default function NewTransactionForm() {
                   <FormControl>
                     <Input {...field} type="number" />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -142,7 +149,7 @@ export default function NewTransactionForm() {
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger className="w-full">
+                      <SelectTrigger className="w-full" disabled={isAdding}>
                         <SelectValue placeholder="Select a category" />
                       </SelectTrigger>
                     </FormControl>
@@ -151,17 +158,21 @@ export default function NewTransactionForm() {
                       <SelectItem value="barber">Barber</SelectItem>
                     </SelectContent>
                   </Select>
+                  <FormMessage />
                 </FormItem>
               )}
             />
+            <Button
+              variant="default"
+              size="sm"
+              className="flex justify-between items-center ml-auto"
+              disabled={isAdding}
+            >
+              {isAdding ? "Adding..." : "Add New Transaction"}
+            </Button>
           </form>
         </Form>
       </CardContent>
-      <CardFooter className="flex justify-between items-center ml-auto">
-        <Button variant="default" size="sm">
-          Add New Transaction
-        </Button>
-      </CardFooter>
     </Card>
   );
 }

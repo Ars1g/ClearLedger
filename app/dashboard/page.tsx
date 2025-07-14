@@ -1,21 +1,10 @@
-import {
-  createNewUserProfile,
-  getUserProfile,
-  getUserSession,
-} from "@/lib/server-data-service";
+import { getOrCreateUserProfile } from "@/lib/server-data-service";
+import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
-  const { user } = await getUserSession();
-  console.log("dashboard session:", user);
-
-  if (!user) return;
-
-  const userProfile = await getUserProfile(user.id);
-
-  if (userProfile.error) {
-    await createNewUserProfile(user.email!, user.user_metadata?.avatar_url);
+  const userProfile = await getOrCreateUserProfile();
+  if (!userProfile) {
+    redirect("/login");
   }
-  console.log("userprofile:", userProfile);
-
   return <div>Dashboard</div>;
 }

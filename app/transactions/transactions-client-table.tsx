@@ -1,11 +1,12 @@
 "use client";
 import { DataTable } from "@/components/Data-table";
-import { getTransactionsClient } from "@/lib/client-data-service";
-import { useQuery } from "@tanstack/react-query";
+
 import { Category, columns, Transaction } from "./transactions-columns";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PlusIcon } from "lucide-react";
+
+import { useTransactions } from "@/hooks/useTransactions";
 
 type Props = {
   transactions: Transaction[];
@@ -16,11 +17,7 @@ export default function TransactionsClientTable({
   transactions,
   categories,
 }: Props) {
-  const { data: cachedTransactions = [] } = useQuery({
-    queryKey: ["transactions"],
-    queryFn: getTransactionsClient,
-    initialData: transactions,
-  });
+  const { cachedTransactions } = useTransactions(transactions);
 
   const categoryMap = categories.reduce(
     (acc, cat) => ({
