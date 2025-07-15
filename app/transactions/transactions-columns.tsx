@@ -49,7 +49,7 @@ function Category({
   row: Row<Transaction>;
   categoryMap: Record<number, Category>;
 }) {
-  const categoryId = row.getValue("categoryId") as number;
+  const categoryId = row.getValue("category_id") as number;
   const category = categoryMap[categoryId];
 
   return <span>{category?.name}</span>;
@@ -64,7 +64,7 @@ function TransactionType({
   row: Row<Transaction>;
   categoryMap: Record<number, Category>;
 }) {
-  const categoryId = row.getValue("categoryId") as number;
+  const categoryId = row.getValue("category_id") as number;
   const category = categoryMap[categoryId];
 
   return <span>{category?.type}</span>;
@@ -90,7 +90,7 @@ export const columns: ColumnDef<Transaction>[] = [
     header: "Description",
   },
   {
-    accessorKey: "categoryId",
+    accessorKey: "category_id",
     header: "Category",
     cell: ({ row, table }) => (
       <Category row={row} categoryMap={table.options.meta!.categoryMap} />

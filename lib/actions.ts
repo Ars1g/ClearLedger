@@ -14,9 +14,7 @@ import { redirect } from "next/navigation";
 import {
   addNewTransaction,
   createUserAccount,
-  deleteTransaction,
   loginWithPassword,
-  signUpWithGoogle,
 } from "./server-data-service";
 import { createClient } from "./supabase-client/server";
 
@@ -32,8 +30,8 @@ export async function newTransactionAction(values: TransactionData) {
     };
   }
   try {
-    const result = await addNewTransaction(values);
-    console.log("trans:", result);
+    await addNewTransaction(values);
+
     return { success: true };
   } catch (error) {
     console.error(error);
@@ -81,14 +79,23 @@ export async function signupSubmitAction(values: SignupData) {
 }
 
 export async function signUpWithGoogleAction() {
-  const result = await signUpWithGoogle();
+  const supabase = await createClient();
 
-  if (result.error) {
-    return { error: true, message: result.error.message };
-  }
-
-  if (result.data.url) {
-    redirect(result.data.url);
+  try {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${process.env.SITE_URL}/auth/callback`,
+      },
+    });
+    if (error) throw error;
+    if (data.url) redirect(data.url);
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      error: "Could not authenticate with Google. Please try again",
+    };
   }
 }
 
@@ -103,17 +110,19 @@ export async function signOutAction() {
     return { success: true };
   } catch (error) {
     console.error(error);
-    return { success: false, error: "Failed to log out" };
+    return { success: false, error: "Failed to sign out" };
   }
 }
 
 export async function deleteTransactionAction(id: number) {
+  const supabase = await createClient();
   try {
-    await deleteTransaction(id);
+    const { error } = await supabase.from("transactions").delete().eq("id", id);
+    if (error) throw error;
 
     return { success: true };
   } catch (error) {
     console.error(error);
-    return null;
+    return { success: false, error: "Failed to delete transaction" };
   }
 }

@@ -14,6 +14,7 @@ export async function addNewTransaction(
         date: values.date,
         description: values.description,
         amount: values.amount,
+        category_id: values.category_id,
       },
     ])
     .select();
@@ -100,37 +101,6 @@ export async function createNewUserProfile(email: string, avatar_url?: string) {
     throw new Error("Failed to create new user profile");
   }
   return { success: true };
-}
-
-export async function deleteTransaction(id: number) {
-  const supabase = await createClient();
-  const { error } = await supabase.from("transactions").delete().eq("id", id);
-
-  if (error) {
-    throw new Error("Failed to delete transaction");
-  }
-  return { success: true };
-}
-
-// export async function signOut() {
-//   const supabase = await createClient();
-//   const { error } = await supabase.auth.signOut();
-
-//   if (error) return { error };
-//   return { success: true };
-// }
-
-export async function signUpWithGoogle() {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
-    options: {
-      redirectTo: `${process.env.SITE_URL}/auth/callback`,
-    },
-  });
-  if (error) return { error };
-  return { data };
 }
 
 export async function getUserSession() {

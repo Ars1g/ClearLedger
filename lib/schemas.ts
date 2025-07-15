@@ -5,6 +5,7 @@ export const transactionSchema = z.object({
   description: z.string().max(1000).min(2),
   amount: z.coerce.number(),
   category: z.string(),
+  category_id: z.coerce.number(),
 });
 
 export const loginSchema = z.object({

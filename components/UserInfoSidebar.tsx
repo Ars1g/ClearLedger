@@ -30,7 +30,6 @@ export default function UserInfoSidebar({ user }: { user: User }) {
     const result = await signOutAction();
 
     if (result.success) {
-      toast.success("You have been signed out");
       router.push("/");
     }
     if (result.error) {

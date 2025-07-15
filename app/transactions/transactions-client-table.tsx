@@ -5,8 +5,8 @@ import { Category, columns, Transaction } from "./transactions-columns";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PlusIcon } from "lucide-react";
-
 import { useTransactions } from "@/hooks/useTransactions";
+import { useCategories } from "@/hooks/useCategories";
 
 type Props = {
   transactions: Transaction[];
@@ -18,8 +18,9 @@ export default function TransactionsClientTable({
   categories,
 }: Props) {
   const { cachedTransactions } = useTransactions(transactions);
+  const { cachedCategories } = useCategories(categories);
 
-  const categoryMap = categories.reduce(
+  const categoryMap = cachedCategories.reduce(
     (acc, cat) => ({
       ...acc,
       [cat.id]: cat,

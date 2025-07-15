@@ -34,8 +34,11 @@ import {
   CardTitle,
 } from "./ui/card";
 import { useAddNewTransaction } from "@/hooks/useAddNewTransaction";
+import { useCategories } from "@/hooks/useCategories";
+import { useEffect, useState } from "react";
 
 export default function NewTransactionForm() {
+  const [isOpen, setIsOpen] = useState(false);
   const form = useForm<TransactionData>({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
@@ -43,12 +46,25 @@ export default function NewTransactionForm() {
       category: "",
       date: undefined,
       description: "",
+      category_id: 1,
     },
   });
   const { addNewTransaction, isAdding } = useAddNewTransaction();
+  const { cachedCategories } = useCategories();
+
+  const category = form.watch("category");
+
+  useEffect(() => {
+    const selectedCategory = cachedCategories.find(
+      (cat) => cat.name === category
+    );
+    if (selectedCategory) {
+      const category_id = selectedCategory?.id;
+      form.setValue("category_id", category_id);
+    }
+  }, [cachedCategories, category, form]);
 
   function onSubmit(values: TransactionData) {
-    console.log(values);
     addNewTransaction(values);
   }
 
@@ -70,7 +86,7 @@ export default function NewTransactionForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Select Date</FormLabel>
-                  <Popover>
+                  <Popover open={isOpen} onOpenChange={setIsOpen}>
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
@@ -94,7 +110,10 @@ export default function NewTransactionForm() {
                       <Calendar
                         mode="single"
                         selected={field.value}
-                        onSelect={field.onChange}
+                        onSelect={(date) => {
+                          field.onChange(date);
+                          setIsOpen(false);
+                        }}
                         disabled={(date) =>
                           date > new Date() || date < new Date("1900-01-01")
                         }
@@ -154,11 +173,23 @@ export default function NewTransactionForm() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="shopping">Shopping</SelectItem>
-                      <SelectItem value="barber">Barber</SelectItem>
+                      {cachedCategories.map((category) => (
+                        <SelectItem value={category.name!} key={category.id}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="category_id"
+              render={({ field }) => (
+                <FormItem hidden>
+                  <Input {...field} type="number" />
                 </FormItem>
               )}
             />

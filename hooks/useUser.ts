@@ -14,3 +14,4 @@ export function useUser() {
 
   return { user, error, isPending };
 }
+// TODO: didn't use it anywhere
