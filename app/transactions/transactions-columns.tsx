@@ -1,6 +1,18 @@
 "use client";
 
+import NewTransactionForm from "@/components/NewTransactionForm";
+import TransactionForm from "@/components/TransactionForm";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,24 +31,44 @@ function ActionCell({ row }: { row: Row<Transaction> }) {
   const transaction = row.original;
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
-          <span className="sr-only">Open menu</span>
-          <EllipsisVerticalIcon className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="start">
-        <DropdownMenuItem>Edit</DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => {
-            deleteTransaction(transaction.id);
-          }}
-        >
-          Delete
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Dialog>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <EllipsisVerticalIcon className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">
+          <DialogTrigger asChild>
+            <DropdownMenuItem>Edit</DropdownMenuItem>
+          </DialogTrigger>
+          <DropdownMenuItem
+            onClick={() => {
+              deleteTransaction(transaction.id);
+            }}
+          >
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Edit transaction</DialogTitle>
+          <DialogDescription>
+            Make changes to your transaction here. Click save when you&apos;re
+            done.
+          </DialogDescription>
+        </DialogHeader>
+        <TransactionForm transaction={transaction} />
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogClose>
+          <Button type="submit">Save changes</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -121,6 +153,11 @@ export const columns: ColumnDef<Transaction>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => <ActionCell row={row} />,
+
+    cell: ({ row }) => (
+      <div className="text-right">
+        <ActionCell row={row} />
+      </div>
+    ),
   },
 ];

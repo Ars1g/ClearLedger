@@ -1,5 +1,5 @@
 "use client";
-import { DataTable } from "@/components/Data-table";
+import { DataTable } from "@/components/DataTable";
 
 import { Category, columns, Transaction } from "./transactions-columns";
 import { Button } from "@/components/ui/button";
@@ -29,7 +29,7 @@ export default function TransactionsClientTable({
   );
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-3">
       <Button asChild className="flex-none max-w-max ">
         <Link href="/transactions/new" className="flex items-center gap-2">
           <PlusIcon />
