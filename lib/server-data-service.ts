@@ -3,6 +3,31 @@ import { LoginData, SignupData, TransactionData } from "./schemas";
 import { createClient } from "./supabase-client/server";
 import { cache } from "react";
 
+export async function editTransaction(
+  values: Transaction
+): Promise<Transaction> {
+  const supabase = await createClient();
+  console.log("Editing transaction with values:", values);
+  const { data: editedTransaction, error } = await supabase
+    .from("transactions")
+    .update({
+      date: values.date,
+      description: values.description,
+      amount: values.amount,
+      category_id: values.category_id,
+    })
+    .eq("id", values.id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Supabase update error:", error);
+    throw new Error("Failed to edit transaction");
+  }
+  console.log("Edited transaction result:", editedTransaction);
+  return editedTransaction;
+}
+
 export async function addNewTransaction(
   values: TransactionData
 ): Promise<Transaction[]> {

@@ -14,17 +14,40 @@ import { redirect } from "next/navigation";
 import {
   addNewTransaction,
   createUserAccount,
+  editTransaction,
   loginWithPassword,
 } from "./server-data-service";
 import { createClient } from "./supabase-client/server";
+import { Transaction } from "@/app/transactions/transactions-columns";
+
+export async function editTransactionAction(values: Transaction) {
+  console.log("editTransactionAction called with:", values);
+  const validatedData = transactionSchema.safeParse(values);
+
+  if (!validatedData.success) {
+    return {
+      success: false,
+      error: validatedData.error.issues[0] ?? "Transaction validation failed",
+    };
+  }
+
+  try {
+    const editedTransaction = await editTransaction(values);
+    console.log("editTransaction returned:", editedTransaction);
+    return { success: true, data: editedTransaction };
+  } catch (error: any) {
+    console.error("editTransaction threw error:", error.message);
+    return { success: false, error: "Failed to edit transaction" };
+  }
+}
 
 export async function newTransactionAction(values: TransactionData) {
   const validatedTransactionData = transactionSchema.safeParse(values);
 
   if (!validatedTransactionData.success) {
     return {
-      error: true,
-      message:
+      success: false,
+      error:
         validatedTransactionData.error.issues[0] ??
         "Transaction validation failed",
     };
@@ -44,7 +67,7 @@ export async function loginAction(values: LoginData) {
 
   if (!validatedLoginData.success) {
     return {
-      error: true,
+      error: true, // TODO: change it to success: false etc
       message: validatedLoginData.error.issues[0] ?? "Login validation failed",
     };
   }

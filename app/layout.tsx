@@ -1,7 +1,7 @@
 import AppSidebar from "@/components/AppSidebar";
 import QueryProvider from "@/components/providers/QueryProvider";
 import ThemeProvider from "@/components/providers/ThemeProvider";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { getUserSession } from "@/lib/server-data-service";
 import type { Metadata } from "next";
@@ -51,7 +51,7 @@ export default async function RootLayout({
               <main>{children}</main>
             )}
           </ThemeProvider>
-          <Toaster richColors expand={true} position="bottom-center" />
+          <Toaster richColors expand={true} position="top-center" />
         </QueryProvider>
       </body>
     </html>

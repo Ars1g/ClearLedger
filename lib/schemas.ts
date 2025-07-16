@@ -1,10 +1,15 @@
 import { z } from "zod";
 
 export const transactionSchema = z.object({
-  date: z.date(),
-  description: z.string().max(1000).min(2),
-  amount: z.coerce.number(),
-  category: z.string(),
+  date: z.date({ message: "Select a date please" }),
+  description: z
+    .string()
+    .max(1000)
+    .min(2, { message: "Description must be at least 2 characters" }),
+  amount: z.coerce
+    .number()
+    .refine((num) => num > 0, { message: "Amount must be above 0" }),
+  category: z.string().min(1, { message: "Category is required" }),
   category_id: z.coerce.number(),
 });
 

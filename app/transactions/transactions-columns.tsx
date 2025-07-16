@@ -1,6 +1,5 @@
 "use client";
 
-import NewTransactionForm from "@/components/NewTransactionForm";
 import TransactionForm from "@/components/TransactionForm";
 import { Button } from "@/components/ui/button";
 import {
@@ -56,17 +55,20 @@ function ActionCell({ row }: { row: Row<Transaction> }) {
         <DialogHeader>
           <DialogTitle>Edit transaction</DialogTitle>
           <DialogDescription>
-            Make changes to your transaction here. Click save when you&apos;re
-            done.
+            Make changes to your transaction here. Click save changes when
+            you&apos;re done.
           </DialogDescription>
         </DialogHeader>
-        <TransactionForm transaction={transaction} />
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DialogClose>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
+        <TransactionForm transaction={transaction}>
+          <DialogFooter className="mt-4">
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button type="submit" onClick={() => console.log("clicked")}>
+              Save changes
+            </Button>
+          </DialogFooter>
+        </TransactionForm>
       </DialogContent>
     </Dialog>
   );
