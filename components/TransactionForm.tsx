@@ -41,13 +41,15 @@ import { useEditTransaction } from "@/hooks/useEditTransaction";
 type Props = {
   transaction?: Transaction;
   children?: (props: { isEditing: boolean }) => ReactNode;
-  setOpenDialog?: (arg: boolean) => void;
+  // setOpenDialog?: (arg: boolean) => void;
+  onSuccess: () => void;
 };
 
 export default function TransactionForm({
   transaction,
   children,
-  setOpenDialog,
+  // setOpenDialog,
+  onSuccess,
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -105,7 +107,7 @@ export default function TransactionForm({
 
       editTransaction(editValues, {
         onSettled: () => {
-          setOpenDialog?.(false);
+          onSuccess();
         },
       });
     } else addNewTransaction(values);

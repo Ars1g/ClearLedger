@@ -1,18 +1,7 @@
 "use client";
 
 import SpinnerMini from "@/components/SpinnerMini";
-import TransactionForm from "@/components/TransactionForm";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,46 +9,54 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useDeleteTransaction } from "@/hooks/useDeleteTransaction";
+import { useModalStore } from "@/lib/store/useModalStore";
 import { Tables } from "@/types/supabase";
 
 import { ColumnDef, Row } from "@tanstack/react-table";
 
 import { EllipsisVerticalIcon } from "lucide-react";
-import { useState } from "react";
 
 function ActionCell({ row }: { row: Row<Transaction> }) {
-  const [openDialog, setOpenDialog] = useState(false);
+  const { onOpen } = useModalStore();
+  // const [openDialog, setOpenDialog] = useState(false);
   const { deleteTransaction, isDeleting } = useDeleteTransaction();
   const transaction = row.original;
 
   return (
-    <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0" disabled={isDeleting}>
-            <span className="sr-only">Open menu</span>
-            {isDeleting ? (
-              <SpinnerMini />
-            ) : (
-              <EllipsisVerticalIcon className="h-4 w-4" />
-            )}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
-          <DialogTrigger asChild>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-          </DialogTrigger>
-          <DropdownMenuItem
-            className="text-red-500"
-            onClick={() => {
-              deleteTransaction(transaction.id);
-            }}
-          >
-            Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <DialogContent>
+    // <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0" disabled={isDeleting}>
+          <span className="sr-only">Open menu</span>
+          {isDeleting ? (
+            <SpinnerMini />
+          ) : (
+            <EllipsisVerticalIcon className="h-4 w-4" />
+          )}
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start">
+        {/* <DialogTrigger asChild> */}
+        <DropdownMenuItem
+          onClick={() => onOpen("editTransaction", transaction)}
+        >
+          Edit
+        </DropdownMenuItem>
+        {/* </DialogTrigger> */}
+        <DropdownMenuItem
+          className="text-red-500"
+          onClick={() => {
+            onOpen("deleteTransaction", transaction);
+            // deleteTransaction(transaction.id);
+          }}
+        >
+          Delete
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+  {
+    /* <DialogContent>
         <DialogHeader>
           <DialogTitle>Edit transaction</DialogTitle>
           <DialogDescription>
@@ -85,8 +82,8 @@ function ActionCell({ row }: { row: Row<Transaction> }) {
           )}
         </TransactionForm>
       </DialogContent>
-    </Dialog>
-  );
+    </Dialog> */
+  }
 }
 
 export type Transaction = Tables<"transactions">;

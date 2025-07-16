@@ -8,6 +8,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AppHeader from "@/components/AppHeader";
+import { DialogManager } from "@/components/providers/DialogManager";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,6 +53,7 @@ export default async function RootLayout({
             )}
           </ThemeProvider>
           <Toaster richColors expand={true} position="top-center" />
+          <DialogManager />
         </QueryProvider>
       </body>
     </html>
