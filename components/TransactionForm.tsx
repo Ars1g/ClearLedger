@@ -71,6 +71,7 @@ export default function TransactionForm({
           amount: transaction.amount ?? 0,
           category: defaultCategory?.name ?? "",
           date: transaction.date ? new Date(transaction.date) : undefined,
+
           description: transaction.description ?? "",
           category_id: transaction.category_id ?? 1,
         }
@@ -146,7 +147,7 @@ export default function TransactionForm({
                           )}
                         >
                           {field.value ? (
-                            format(new Date(field.value), "PPP")
+                            format(field.value, "PPP")
                           ) : (
                             <span>Pick a date</span>
                           )}
@@ -160,7 +161,7 @@ export default function TransactionForm({
                         selected={field.value}
                         onSelect={(date) => {
                           if (date) {
-                            field.onChange(date); // keep as Date
+                            field.onChange(date);
                           }
                           setIsOpen(false);
                         }}

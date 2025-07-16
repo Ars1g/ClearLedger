@@ -1,5 +1,6 @@
 "use client";
 
+import SpinnerMini from "@/components/SpinnerMini";
 import TransactionForm from "@/components/TransactionForm";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,9 +36,13 @@ function ActionCell({ row }: { row: Row<Transaction> }) {
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
+          <Button variant="ghost" className="h-8 w-8 p-0" disabled={isDeleting}>
             <span className="sr-only">Open menu</span>
-            <EllipsisVerticalIcon className="h-4 w-4" />
+            {isDeleting ? (
+              <SpinnerMini />
+            ) : (
+              <EllipsisVerticalIcon className="h-4 w-4" />
+            )}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
@@ -45,6 +50,7 @@ function ActionCell({ row }: { row: Row<Transaction> }) {
             <DropdownMenuItem>Edit</DropdownMenuItem>
           </DialogTrigger>
           <DropdownMenuItem
+            className="text-red-500"
             onClick={() => {
               deleteTransaction(transaction.id);
             }}

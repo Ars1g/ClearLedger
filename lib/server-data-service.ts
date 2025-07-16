@@ -33,11 +33,12 @@ export async function addNewTransaction(
   values: TransactionData
 ): Promise<Transaction[]> {
   const supabase = await createClient();
+
   const { data: transactions, error } = await supabase
     .from("transactions")
     .insert([
       {
-        date: values.date,
+        date: format(values.date, "yyyy-MM-dd"),
         description: values.description,
         amount: values.amount,
         category_id: values.category_id,

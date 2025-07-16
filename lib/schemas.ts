@@ -2,9 +2,6 @@ import { z } from "zod";
 
 export const transactionSchema = z.object({
   date: z.date({ message: "Select a date please" }),
-  // date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
-  //   message: "Date must be in YYYY-MM-DD format.",
-  // }),
   description: z
     .string()
     .max(1000)
