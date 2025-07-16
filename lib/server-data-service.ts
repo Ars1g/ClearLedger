@@ -4,7 +4,7 @@ import { createClient } from "./supabase-client/server";
 import { cache } from "react";
 
 export async function editTransaction(
-  values: Transaction
+  values: TransactionData
 ): Promise<Transaction> {
   const supabase = await createClient();
   console.log("Editing transaction with values:", values);
@@ -66,7 +66,8 @@ export async function getTransactions(): Promise<Transaction[]> {
   const supabase = await createClient();
   const { data: transactions, error } = await supabase
     .from("transactions")
-    .select("*");
+    .select("*")
+    .order("date", { ascending: false });
 
   if (error) {
     throw new Error("Failed to fetch transactions");

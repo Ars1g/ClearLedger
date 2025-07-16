@@ -11,6 +11,7 @@ export const transactionSchema = z.object({
     .refine((num) => num > 0, { message: "Amount must be above 0" }),
   category: z.string().min(1, { message: "Category is required" }),
   category_id: z.coerce.number(),
+  id: z.number().optional(),
 });
 
 export const loginSchema = z.object({

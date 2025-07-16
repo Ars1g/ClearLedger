@@ -18,9 +18,8 @@ import {
   loginWithPassword,
 } from "./server-data-service";
 import { createClient } from "./supabase-client/server";
-import { Transaction } from "@/app/transactions/transactions-columns";
 
-export async function editTransactionAction(values: Transaction) {
+export async function editTransactionAction(values: TransactionData) {
   console.log("editTransactionAction called with:", values);
   const validatedData = transactionSchema.safeParse(values);
 
@@ -67,15 +66,15 @@ export async function loginAction(values: LoginData) {
 
   if (!validatedLoginData.success) {
     return {
-      error: true, // TODO: change it to success: false etc
-      message: validatedLoginData.error.issues[0] ?? "Login validation failed",
+      success: false,
+      error: validatedLoginData.error.issues[0] ?? "Login validation failed",
     };
   }
 
   const result = await loginWithPassword(validatedLoginData.data);
 
   if (result.error) {
-    return { error: true, message: result.error.message };
+    return { success: false, error: result.error.message };
   }
   revalidatePath("/", "layout");
   return { success: true };
@@ -86,8 +85,8 @@ export async function signupSubmitAction(values: SignupData) {
 
   if (!validatedSignupData.success) {
     return {
-      error: true,
-      message: validatedSignupData.error.issues[0] ?? "Form validation failed",
+      success: false,
+      error: validatedSignupData.error.issues[0] ?? "Form validation failed",
       field: validatedSignupData.error.issues[0]?.path?.[0],
     };
   }

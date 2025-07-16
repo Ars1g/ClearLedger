@@ -24,13 +24,15 @@ import { Tables } from "@/types/supabase";
 import { ColumnDef, Row } from "@tanstack/react-table";
 
 import { EllipsisVerticalIcon } from "lucide-react";
+import { useState } from "react";
 
 function ActionCell({ row }: { row: Row<Transaction> }) {
+  const [openDialog, setOpenDialog] = useState(false);
   const { deleteTransaction, isDeleting } = useDeleteTransaction();
   const transaction = row.original;
 
   return (
-    <Dialog>
+    <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
@@ -59,15 +61,22 @@ function ActionCell({ row }: { row: Row<Transaction> }) {
             you&apos;re done.
           </DialogDescription>
         </DialogHeader>
-        <TransactionForm transaction={transaction}>
-          <DialogFooter className="mt-4">
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button type="submit" onClick={() => console.log("clicked")}>
-              Save changes
-            </Button>
-          </DialogFooter>
+        <TransactionForm
+          transaction={transaction}
+          setOpenDialog={setOpenDialog}
+        >
+          {({ isEditing }) => (
+            <DialogFooter className="mt-4">
+              <DialogClose asChild>
+                <Button variant="outline" disabled={isEditing}>
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button type="submit" disabled={isEditing}>
+                {isEditing ? "Editing..." : "Save changes"}
+              </Button>
+            </DialogFooter>
+          )}
         </TransactionForm>
       </DialogContent>
     </Dialog>

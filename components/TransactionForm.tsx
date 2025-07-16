@@ -40,10 +40,15 @@ import { useEditTransaction } from "@/hooks/useEditTransaction";
 
 type Props = {
   transaction?: Transaction;
-  children?: ReactNode;
+  children?: (props: { isEditing: boolean }) => ReactNode;
+  setOpenDialog?: (arg: boolean) => void;
 };
 
-export default function TransactionForm({ transaction, children }: Props) {
+export default function TransactionForm({
+  transaction,
+  children,
+  setOpenDialog,
+}: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
   const { cachedCategories } = useCategories();
@@ -78,21 +83,7 @@ export default function TransactionForm({ transaction, children }: Props) {
         },
   });
 
-  const category = form.watch("category"); // TODO: delete this?
-  const formValues = form.watch();
-
-  let editFormData: Transaction;
-  if (isEditMode) {
-    editFormData = {
-      amount: formValues.amount,
-      date: new Date(formValues.date),
-      description: formValues.description,
-      category_id: formValues.category_id,
-      id: transaction!.id,
-      user_id: transaction!.user_id,
-      created_at: transaction!.created_at,
-    };
-  }
+  const category = form.watch("category");
 
   useEffect(() => {
     const selectedCategory = cachedCategories.find(
@@ -104,20 +95,19 @@ export default function TransactionForm({ transaction, children }: Props) {
     }
   }, [cachedCategories, category, form]);
 
-  function onSubmit(values: TransactionData | Transaction) {
+  function onSubmit(values: TransactionData) {
     if (isEditMode) {
-      // console.log("Submitting edit:", editFormData);
-      // editTransaction(editFormData, {
-      //   onSettled: () => {
-      //     setIsOpen(false);
-      //   },
-      // });
-      const data = {
+      const editValues = {
         ...values,
         id: transaction?.id,
       };
-      console.log("data:", data);
-    } else addNewTransaction(values as TransactionData);
+
+      editTransaction(editValues, {
+        onSettled: () => {
+          setOpenDialog?.(false);
+        },
+      });
+    } else addNewTransaction(values);
   }
 
   return (
@@ -148,7 +138,7 @@ export default function TransactionForm({ transaction, children }: Props) {
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
-                          disabled={isAdding}
+                          disabled={isAdding || isEditing}
                           variant={"outline"}
                           className={cn(
                             "font-normal",
@@ -185,7 +175,7 @@ export default function TransactionForm({ transaction, children }: Props) {
             />
             <FormField
               control={form.control}
-              disabled={isAdding} // TODO: add || isEditing
+              disabled={isAdding || isEditing}
               name="description"
               render={({ field }) => (
                 <FormItem>
@@ -202,7 +192,7 @@ export default function TransactionForm({ transaction, children }: Props) {
               )}
             />
             <FormField
-              disabled={isAdding}
+              disabled={isAdding || isEditing}
               control={form.control}
               name="amount"
               render={({ field }) => (
@@ -226,7 +216,10 @@ export default function TransactionForm({ transaction, children }: Props) {
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger className="w-full" disabled={isAdding}>
+                      <SelectTrigger
+                        className="w-full"
+                        disabled={isAdding || isEditing}
+                      >
                         <SelectValue placeholder="Select a category" />
                       </SelectTrigger>
                     </FormControl>
@@ -252,13 +245,13 @@ export default function TransactionForm({ transaction, children }: Props) {
               )}
             />
             {isEditMode ? (
-              children
+              children && children({ isEditing })
             ) : (
               <Button
                 variant="default"
                 size="sm"
                 className="w-full mt-4"
-                disabled={isAdding}
+                disabled={isAdding || isEditing}
               >
                 {isAdding ? "Adding..." : "Add New Transaction"}
               </Button>

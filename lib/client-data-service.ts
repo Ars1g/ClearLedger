@@ -4,7 +4,8 @@ import supabase from "./supabase-client/client";
 export async function getTransactionsClient(): Promise<Transaction[]> {
   const { data: transactions, error } = await supabase
     .from("transactions")
-    .select("*");
+    .select("*")
+    .order("date", { ascending: false });
 
   if (error) {
     throw new Error("Failed to fetch transactions");
