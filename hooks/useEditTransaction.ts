@@ -1,4 +1,3 @@
-import { Transaction } from "@/app/transactions/transactions-columns";
 import { editTransactionAction } from "@/lib/actions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -6,7 +5,7 @@ import { toast } from "sonner";
 
 export function useEditTransaction() {
   const queryClient = useQueryClient();
-  //   const router = useRouter();
+
   const { mutate: editTransaction, isPending: isEditing } = useMutation({
     mutationFn: editTransactionAction,
     onSuccess: (result) => {

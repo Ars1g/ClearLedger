@@ -2,6 +2,7 @@ import { Category, Transaction } from "@/app/transactions/transactions-columns";
 import { LoginData, SignupData, TransactionData } from "./schemas";
 import { createClient } from "./supabase-client/server";
 import { cache } from "react";
+import { format } from "date-fns";
 
 export async function editTransaction(
   values: TransactionData
@@ -11,7 +12,7 @@ export async function editTransaction(
   const { data: editedTransaction, error } = await supabase
     .from("transactions")
     .update({
-      date: values.date,
+      date: format(values.date, "yyyy-MM-dd"),
       description: values.description,
       amount: values.amount,
       category_id: values.category_id,

@@ -146,7 +146,7 @@ export default function TransactionForm({
                           )}
                         >
                           {field.value ? (
-                            format(field.value, "PPP")
+                            format(new Date(field.value), "PPP")
                           ) : (
                             <span>Pick a date</span>
                           )}
@@ -159,7 +159,9 @@ export default function TransactionForm({
                         mode="single"
                         selected={field.value}
                         onSelect={(date) => {
-                          field.onChange(date);
+                          if (date) {
+                            field.onChange(date); // keep as Date
+                          }
                           setIsOpen(false);
                         }}
                         disabled={(date) =>

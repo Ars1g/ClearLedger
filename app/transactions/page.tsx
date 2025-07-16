@@ -1,6 +1,8 @@
 import { getCategories, getTransactions } from "@/lib/server-data-service";
 import TransactionsClientTable from "./transactions-client-table";
 import Error from "@/components/Error";
+import { Suspense } from "react";
+import Spinner from "@/components/Spinner";
 
 export default async function TransactionsPage() {
   const [transactionsResult, categoriesResult] = await Promise.allSettled([
@@ -24,10 +26,12 @@ export default async function TransactionsPage() {
 
   return (
     <div className="max-w-[75rem] mx-auto py-10 px-2 sm:px-4">
-      <TransactionsClientTable
-        transactions={transactions}
-        categories={categories}
-      />
+      <Suspense fallback={<Spinner />}>
+        <TransactionsClientTable
+          transactions={transactions}
+          categories={categories}
+        />
+      </Suspense>
     </div>
   );
 }
