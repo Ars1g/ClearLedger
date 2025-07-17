@@ -41,8 +41,8 @@ import { useEditTransaction } from "@/hooks/useEditTransaction";
 type Props = {
   transaction?: Transaction;
   children?: (props: { isEditing: boolean }) => ReactNode;
-  // setOpenDialog?: (arg: boolean) => void;
-  onSuccess: () => void;
+
+  onSuccess?: () => void;
 };
 
 export default function TransactionForm({
@@ -73,7 +73,6 @@ export default function TransactionForm({
           amount: transaction.amount ?? 0,
           category: defaultCategory?.name ?? "",
           date: transaction.date ? new Date(transaction.date) : undefined,
-
           description: transaction.description ?? "",
           category_id: transaction.category_id ?? 1,
         }
@@ -86,17 +85,17 @@ export default function TransactionForm({
         },
   });
 
-  const category = form.watch("category");
+  const categoryValue = form.watch("category");
 
   useEffect(() => {
     const selectedCategory = cachedCategories.find(
-      (cat) => cat.name === category
+      (cat) => cat.name === categoryValue
     );
     if (selectedCategory) {
       const category_id = selectedCategory?.id;
       form.setValue("category_id", category_id);
     }
-  }, [cachedCategories, category, form]);
+  }, [cachedCategories, categoryValue, form]);
 
   function onSubmit(values: TransactionData) {
     if (isEditMode) {
@@ -107,7 +106,7 @@ export default function TransactionForm({
 
       editTransaction(editValues, {
         onSettled: () => {
-          onSuccess();
+          onSuccess?.();
         },
       });
     } else addNewTransaction(values);

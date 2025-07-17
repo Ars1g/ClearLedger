@@ -10,14 +10,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-import TransactionForm from "../TransactionForm";
 import { useModalStore } from "@/lib/store/useModalStore";
+import DeleteConfirmation from "../DeleteConfirmation";
+import TransactionForm from "../TransactionForm";
 import { Button } from "../ui/button";
-import { useDeleteTransaction } from "@/hooks/useDeleteTransaction";
 
 export function DialogManager() {
   const { modal, onClose } = useModalStore();
-  const { deleteTransaction, isDeleting } = useDeleteTransaction();
 
   const isOpen = modal.type !== null;
 
@@ -40,10 +39,7 @@ export function DialogManager() {
                 you&apos;re done.
               </DialogDescription>
             </DialogHeader>
-            <TransactionForm
-              transaction={modal.data}
-              onSuccess={onClose} // Pass onClose to close the dialog on success
-            >
+            <TransactionForm transaction={modal.data} onSuccess={onClose}>
               {({ isEditing }) => (
                 <DialogFooter className="mt-4">
                   <DialogClose asChild>
@@ -62,28 +58,7 @@ export function DialogManager() {
         break;
       case "deleteTransaction":
         content = (
-          <>
-            <DialogHeader>
-              <DialogTitle>Delete transaction</DialogTitle>
-            </DialogHeader>
-
-            <DialogDescription>
-              Are you sure you want to delete this transaction?
-            </DialogDescription>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
-              </DialogClose>
-              <Button
-                onClick={() => {
-                  deleteTransaction(modal.data!.id);
-                  onClose();
-                }}
-              >
-                Delete
-              </Button>
-            </DialogFooter>
-          </>
+          <DeleteConfirmation onClose={onClose} transaction={modal.data} />
         );
         break;
       default:

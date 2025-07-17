@@ -8,8 +8,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useDeleteTransaction } from "@/hooks/useDeleteTransaction";
 import { useModalStore } from "@/lib/store/useModalStore";
+import { usePendingStore } from "@/lib/store/usePendingStore";
 import { Tables } from "@/types/supabase";
 
 import { ColumnDef, Row } from "@tanstack/react-table";
@@ -18,12 +18,12 @@ import { EllipsisVerticalIcon } from "lucide-react";
 
 function ActionCell({ row }: { row: Row<Transaction> }) {
   const { onOpen } = useModalStore();
-  // const [openDialog, setOpenDialog] = useState(false);
-  const { deleteTransaction, isDeleting } = useDeleteTransaction();
+
+  const { pendingIds } = usePendingStore();
   const transaction = row.original;
+  const isDeleting = pendingIds.has(transaction.id);
 
   return (
-    // <Dialog open={openDialog} onOpenChange={setOpenDialog}>
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="h-8 w-8 p-0" disabled={isDeleting}>
@@ -36,18 +36,16 @@ function ActionCell({ row }: { row: Row<Transaction> }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
-        {/* <DialogTrigger asChild> */}
         <DropdownMenuItem
           onClick={() => onOpen("editTransaction", transaction)}
         >
           Edit
         </DropdownMenuItem>
-        {/* </DialogTrigger> */}
+
         <DropdownMenuItem
           className="text-red-500"
           onClick={() => {
             onOpen("deleteTransaction", transaction);
-            // deleteTransaction(transaction.id);
           }}
         >
           Delete
@@ -55,35 +53,6 @@ function ActionCell({ row }: { row: Row<Transaction> }) {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-  {
-    /* <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Edit transaction</DialogTitle>
-          <DialogDescription>
-            Make changes to your transaction here. Click save changes when
-            you&apos;re done.
-          </DialogDescription>
-        </DialogHeader>
-        <TransactionForm
-          transaction={transaction}
-          setOpenDialog={setOpenDialog}
-        >
-          {({ isEditing }) => (
-            <DialogFooter className="mt-4">
-              <DialogClose asChild>
-                <Button variant="outline" disabled={isEditing}>
-                  Cancel
-                </Button>
-              </DialogClose>
-              <Button type="submit" disabled={isEditing}>
-                {isEditing ? "Editing..." : "Save changes"}
-              </Button>
-            </DialogFooter>
-          )}
-        </TransactionForm>
-      </DialogContent>
-    </Dialog> */
-  }
 }
 
 export type Transaction = Tables<"transactions">;
