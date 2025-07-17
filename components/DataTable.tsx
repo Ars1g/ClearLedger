@@ -3,10 +3,7 @@
 import {
   ColumnDef,
   flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  TableMeta,
-  useReactTable,
+  Table as TanstackTable,
 } from "@tanstack/react-table";
 
 import {
@@ -22,27 +19,14 @@ import { DataTablePagination } from "./DataTablePagination";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-  meta: TableMeta<TData>;
+  table: TanstackTable<TData>;
 }
 
 export function DataTable<TData, TValue>({
   columns,
-  meta,
-  data,
+  table,
 }: DataTableProps<TData, TValue>) {
-  const table = useReactTable({
-    data,
-    columns,
-    meta,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    state: {
-      columnVisibility: {
-        id: false,
-      },
-    },
-  });
+  const { pageIndex, pageSize } = table.getState().pagination;
 
   return (
     <div className="flex flex-col gap-3">
@@ -68,16 +52,20 @@ export function DataTable<TData, TValue>({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+              table.getRowModel().rows.map((row, i) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
+                      {cell.column.id === "index" ? (
+                        <span>{pageIndex * pageSize + i + 1}</span>
+                      ) : (
+                        flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )
                       )}
                     </TableCell>
                   ))}

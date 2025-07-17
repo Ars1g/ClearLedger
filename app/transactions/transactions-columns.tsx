@@ -90,6 +90,7 @@ export const columns: ColumnDef<Transaction>[] = [
     id: "index",
     header: "#",
     cell: ({ row }) => row.index + 1,
+    enableSorting: false,
   },
   {
     accessorKey: "id",
