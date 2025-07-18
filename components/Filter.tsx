@@ -1,7 +1,10 @@
+"use client";
+
 import { Transaction } from "@/app/transactions/transactions-columns";
 import { Table } from "@tanstack/react-table";
 import { FilterIcon } from "lucide-react";
 import { useState } from "react";
+import { type DateRange } from "react-day-picker";
 import { Button } from "./ui/button";
 import {
   DropdownMenu,
@@ -14,17 +17,24 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 
-import CalendarWithRange from "./CalendarWithRange";
+import { Calendar } from "./ui/calendar";
 
 export default function Filter({ table }: { table: Table<Transaction> }) {
   const [checked, setChecked] = useState({ expense: false, income: false });
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: undefined,
+    to: undefined,
+  });
+
+  const typeColumn = table.getColumn("type");
+  const dateColumn = table.getColumn("date");
 
   return (
     <div className="flex items-center gap-1">
-      <span className="text-sm font-medium">Filter by:</span>
+      <span className="text-sm font-medium justify-self-end">Filter by:</span>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost">
+          <Button variant="ghost" size="icon">
             <FilterIcon />
           </Button>
         </DropdownMenuTrigger>
@@ -34,11 +44,11 @@ export default function Filter({ table }: { table: Table<Transaction> }) {
             onCheckedChange={(value) => {
               if (checked.expense === true) {
                 setChecked(() => ({ expense: false, income: false }));
-                table.setColumnFilters([]);
+                typeColumn?.setFilterValue([]);
               }
               if (checked.expense === false) {
                 setChecked(() => ({ expense: value, income: false }));
-                table.setColumnFilters([{ id: "type", value: "expense" }]);
+                typeColumn?.setFilterValue("expense");
               }
             }}
           >
@@ -49,11 +59,11 @@ export default function Filter({ table }: { table: Table<Transaction> }) {
             onCheckedChange={(value) => {
               if (checked.income === true) {
                 setChecked(() => ({ expense: false, income: false }));
-                table.setColumnFilters([]);
+                typeColumn?.setFilterValue([]);
               }
               if (checked.income === false) {
                 setChecked(() => ({ expense: false, income: value }));
-                table.setColumnFilters([{ id: "type", value: "income" }]);
+                typeColumn?.setFilterValue("income");
               }
             }}
           >
@@ -65,7 +75,20 @@ export default function Filter({ table }: { table: Table<Transaction> }) {
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
-                <CalendarWithRange />
+                <Calendar
+                  mode="range"
+                  defaultMonth={dateRange?.from}
+                  selected={dateRange}
+                  onSelect={(value) => {
+                    setDateRange(value);
+                    if (!dateRange) {
+                      dateColumn?.setFilterValue([]);
+                    } else {
+                      dateColumn?.setFilterValue(value);
+                    }
+                  }}
+                  className="rounded-lg border shadow-sm"
+                />
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>

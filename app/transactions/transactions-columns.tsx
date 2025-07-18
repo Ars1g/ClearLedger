@@ -1,6 +1,7 @@
 "use client";
 
 import SpinnerMini from "@/components/SpinnerMini";
+import Tag from "@/components/Tag";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,9 +14,10 @@ import { usePendingStore } from "@/lib/store/usePendingStore";
 import { Tables } from "@/types/supabase";
 
 import { ColumnDef, Row } from "@tanstack/react-table";
-import { format } from "date-fns";
+import { format, isWithinInterval } from "date-fns";
 
 import { EllipsisVerticalIcon } from "lucide-react";
+import { ReactNode } from "react";
 
 function ActionCell({ row }: { row: Row<Transaction> }) {
   const { onOpen } = useModalStore();
@@ -61,7 +63,7 @@ export type Category = Tables<"categories">;
 
 export const getColumns = (
   categoryMap: Record<number, Category>
-): ColumnDef<Transaction>[] => [
+): ColumnDef<Transaction, ReactNode>[] => [
   {
     id: "index",
     header: "#",
@@ -81,6 +83,11 @@ export const getColumns = (
         ? format(row.original.date, "MMM dd, yyyy")
         : "-";
     },
+    filterFn: (row, columnId, filterValue) =>
+      isWithinInterval(row.original.date!, {
+        start: format(filterValue.from, "yyyy-MM-dd"),
+        end: format(filterValue.to, "yyyy-MM-dd"),
+      }),
   },
   {
     accessorKey: "description",
@@ -96,6 +103,23 @@ export const getColumns = (
   {
     id: "type",
     header: "Type",
+    cell: ({ row, table, getValue }) => {
+      console.log(getValue());
+      const value = getValue();
+      if (value === "income") {
+        return (
+          <Tag variant="income">
+            <span>{value}</span>
+          </Tag>
+        );
+      } else {
+        return (
+          <Tag variant="expense">
+            <span>{value}</span>
+          </Tag>
+        );
+      }
+    },
     accessorFn: (row) => {
       return categoryMap[row.category_id].type;
     },

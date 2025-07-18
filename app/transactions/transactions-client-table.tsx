@@ -79,12 +79,12 @@ export default function TransactionsClientTable({
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex items-center justify-between">
-        <div className="flex gap-8  justify-between">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex gap-2 sm:gap-3  justify-between md:gap-5 lg:gap-8">
           <Button asChild className="flex-none max-w-max">
             <Link href="/transactions/new" className="flex gap-2">
               <PlusIcon />
-              <span className="hidden sm:inline">Add Transaction</span>
+              <span className="hidden md:inline">Add Transaction</span>
             </Link>
           </Button>
 
@@ -96,10 +96,10 @@ export default function TransactionsClientTable({
             onChange={(value) =>
               table.getColumn("description")?.setFilterValue(value)
             }
-            className="md:max-w-sm lg:w-[22rem] max-w-35 w-[16rem]"
+            className="lg:max-w-sm lg:w-[22rem] max-w-40 w-[16rem]"
           />
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           <Filter table={table} />
           <SortControls table={table} />
         </div>
