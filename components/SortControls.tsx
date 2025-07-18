@@ -21,10 +21,10 @@ export default function SortControls({ table }: { table: Table<Transaction> }) {
     table.setSorting([{ id, desc: order === "desc" }]);
   };
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 ">
       <span className="text-sm font-medium">Sort by:</span>
       <Select onValueChange={handleSortChange}>
-        <SelectTrigger className="w-[12rem]">
+        <SelectTrigger className="sm:w-[9rem] w-[6rem] md:w-[12rem]">
           <SelectValue placeholder="Default" />
         </SelectTrigger>
         <SelectContent>

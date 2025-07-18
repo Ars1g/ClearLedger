@@ -13,6 +13,7 @@ import { usePendingStore } from "@/lib/store/usePendingStore";
 import { Tables } from "@/types/supabase";
 
 import { ColumnDef, Row } from "@tanstack/react-table";
+import { format } from "date-fns";
 
 import { EllipsisVerticalIcon } from "lucide-react";
 
@@ -100,6 +101,9 @@ export const columns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "date",
     header: "Date",
+    cell: ({ row }) => {
+      return row.original.date ? format(row.original.date, "PPP") : "-";
+    },
   },
   {
     accessorKey: "description",
