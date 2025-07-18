@@ -17,7 +17,7 @@ export default function SortControls({ table }: { table: Table<Transaction> }) {
       return;
     }
     const [id, order] = value.split("-");
-    // `table.setSorting` is the core function to programmatically set the sort state
+
     table.setSorting([{ id, desc: order === "desc" }]);
   };
   return (

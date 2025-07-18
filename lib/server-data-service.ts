@@ -68,8 +68,8 @@ export async function getTransactions(): Promise<Transaction[]> {
   const supabase = await createClient();
   const { data: transactions, error } = await supabase
     .from("transactions")
-    .select("*");
-  // .order("date", { ascending: false });
+    .select("*")
+    .order("date", { ascending: false });
 
   if (error) {
     throw new Error("Failed to fetch transactions");

@@ -19,7 +19,7 @@ import {
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Category, columns, Transaction } from "./transactions-columns";
+import { Category, getColumns, Transaction } from "./transactions-columns";
 
 type Props = {
   transactions: Transaction[];
@@ -53,10 +53,12 @@ export default function TransactionsClientTable({
     [cachedCategories]
   );
 
+  const columns = getColumns(categoryMap);
+
   const table = useReactTable({
     data: cachedTransactions,
     columns,
-    meta: { categoryMap },
+
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),

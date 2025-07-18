@@ -57,36 +57,11 @@ function ActionCell({ row }: { row: Row<Transaction> }) {
 }
 
 export type Transaction = Tables<"transactions">;
-
-function Category({
-  row,
-  categoryMap,
-}: {
-  row: Row<Transaction>;
-  categoryMap: Record<number, Category>;
-}) {
-  const categoryId = row.getValue("category_id") as number;
-  const category = categoryMap[categoryId];
-
-  return <span>{category?.name}</span>;
-}
-
 export type Category = Tables<"categories">;
 
-function TransactionType({
-  row,
-  categoryMap,
-}: {
-  row: Row<Transaction>;
-  categoryMap: Record<number, Category>;
-}) {
-  const categoryId = row.getValue("category_id") as number;
-  const category = categoryMap[categoryId];
-
-  return <span>{category?.type}</span>;
-}
-
-export const columns: ColumnDef<Transaction>[] = [
+export const getColumns = (
+  categoryMap: Record<number, Category>
+): ColumnDef<Transaction>[] => [
   {
     id: "index",
     header: "#",
@@ -112,19 +87,16 @@ export const columns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "category_id",
     header: "Category",
-    cell: ({ row, table }) => (
-      <Category row={row} categoryMap={table.options.meta!.categoryMap} />
-    ),
+    accessorFn: (row) => {
+      return categoryMap[row.category_id].name;
+    },
   },
   {
     id: "type",
     header: "Type",
-    cell: ({ row, table }) => (
-      <TransactionType
-        row={row}
-        categoryMap={table.options.meta!.categoryMap}
-      />
-    ),
+    accessorFn: (row) => {
+      return categoryMap[row.category_id].type;
+    },
   },
   {
     accessorKey: "amount",
