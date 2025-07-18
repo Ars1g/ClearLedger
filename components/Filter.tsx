@@ -1,14 +1,20 @@
+import { Transaction } from "@/app/transactions/transactions-columns";
+import { Table } from "@tanstack/react-table";
 import { FilterIcon } from "lucide-react";
+import { useState } from "react";
 import { Button } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuPortal,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { Table } from "@tanstack/react-table";
-import { Transaction } from "@/app/transactions/transactions-columns";
-import { useState } from "react";
+
+import CalendarWithRange from "./CalendarWithRange";
 
 export default function Filter({ table }: { table: Table<Transaction> }) {
   const [checked, setChecked] = useState({ expense: false, income: false });
@@ -53,6 +59,16 @@ export default function Filter({ table }: { table: Table<Transaction> }) {
           >
             Income
           </DropdownMenuCheckboxItem>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger className="pl-[1.9rem]">
+              Date
+            </DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                <CalendarWithRange />
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

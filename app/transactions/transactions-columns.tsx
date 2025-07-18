@@ -77,7 +77,9 @@ export const getColumns = (
     accessorKey: "date",
     header: "Date",
     cell: ({ row }) => {
-      return row.original.date ? format(row.original.date, "PPP") : "-";
+      return row.original.date
+        ? format(row.original.date, "MMM dd, yyyy")
+        : "-";
     },
   },
   {
