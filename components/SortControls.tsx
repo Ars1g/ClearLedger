@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select";
 
 export default function SortControls({ table }: { table: Table<Transaction> }) {
-  const currentSortColumnId = table.getState().sorting[0]?.id;
+  // const currentSortColumnId = table.getState().sorting[0]?.id;
 
   const handleSortChange = (value: string) => {
     if (value === "default") {
@@ -33,7 +33,8 @@ export default function SortControls({ table }: { table: Table<Transaction> }) {
           <SelectItem value="date-asc">Date: Oldest first</SelectItem>
           <SelectItem value="amount-desc">Amount: High to Low</SelectItem>
           <SelectItem value="amount-asc">Amount: Low to High</SelectItem>
-          <SelectItem value="category_id-asc">Category</SelectItem>
+          <SelectItem value="category_id-asc">Category: A-Z</SelectItem>
+          <SelectItem value="category_id-desc">Category: Z-A</SelectItem>
         </SelectContent>
       </Select>
     </div>

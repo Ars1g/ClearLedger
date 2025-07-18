@@ -20,6 +20,7 @@ import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Category, getColumns, Transaction } from "./transactions-columns";
+import Filter from "@/components/Filter";
 
 type Props = {
   transactions: Transaction[];
@@ -98,7 +99,10 @@ export default function TransactionsClientTable({
             className="md:max-w-sm lg:w-[22rem] max-w-35 w-[16rem]"
           />
         </div>
-        <SortControls table={table} />
+        <div className="flex items-center gap-4">
+          <Filter table={table} />
+          <SortControls table={table} />
+        </div>
       </div>
       <DataTable table={table} columns={columns} />
     </div>
